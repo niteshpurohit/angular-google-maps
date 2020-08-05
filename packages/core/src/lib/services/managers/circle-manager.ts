@@ -8,14 +8,14 @@ import { GoogleMapsAPIWrapper } from '../google-maps-api-wrapper';
 @Injectable()
 export class CircleManager {
   private _circles: Map<AgmCircle, Promise<google.maps.Circle>> =
-      new Map<AgmCircle, Promise<google.maps.Circle>>();
+    new Map<AgmCircle, Promise<google.maps.Circle>>();
 
-  constructor(private _apiWrapper: GoogleMapsAPIWrapper, private _zone: NgZone) {}
+  constructor(private _apiWrapper: GoogleMapsAPIWrapper, private _zone: NgZone) { }
 
   addCircle(circle: AgmCircle) {
-    this._apiWrapper.getNativeMap().then( () =>
+    this._apiWrapper.getNativeMap().then(() =>
       this._circles.set(circle, this._apiWrapper.createCircle({
-        center: {lat: circle.latitude, lng: circle.longitude},
+        center: { lat: circle.latitude, lng: circle.longitude },
         clickable: circle.clickable,
         draggable: circle.draggable,
         editable: circle.editable,
@@ -64,7 +64,7 @@ export class CircleManager {
 
   setCenter(circle: AgmCircle): Promise<void> {
     return this._circles.get(circle).then(
-        c => c.setCenter({lat: circle.latitude, lng: circle.longitude}));
+      c => c.setCenter({ lat: circle.latitude, lng: circle.longitude }));
   }
 
   setEditable(circle: AgmCircle): Promise<void> {
@@ -90,7 +90,7 @@ export class CircleManager {
   createEventObservable<T>(eventName: string, circle: AgmCircle): Observable<T> {
     return new Observable((observer: Observer<T>) => {
       let listener: google.maps.MapsEventListener = null;
-      this._circles.get(circle).then((c) => {
+      this._circles.get(circle)?.then((c) => {
         listener = c.addListener(eventName, (e: T) => this._zone.run(() => observer.next(e)));
       });
 
